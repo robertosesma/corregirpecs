@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="648.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.leam.corregirpecs.InitController">
+   <children>
+      <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="18.0" prefHeight="20.0" prefWidth="71.0" text="Trabajo:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="folder" layoutX="90.0" layoutY="14.0" prefHeight="25.0" prefWidth="202.0" text="C:\CorregirPECs" />
+      <Button fx:id="btFolder" layoutX="296.0" layoutY="14.0" mnemonicParsing="false" onAction="#pbFolder" text="..." />
+      <Label alignment="CENTER_RIGHT" layoutX="329.0" layoutY="17.0" prefHeight="20.0" prefWidth="71.0" text="OneDrive:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="onedrive" layoutX="406.0" layoutY="16.0" prefHeight="25.0" prefWidth="202.0" text="C:\Users\rsesm\OneDrive - UAB" />
+      <Button fx:id="btOneDrive" layoutX="614.0" layoutY="16.0" mnemonicParsing="false" onAction="#pbOneDrive" text="..." />
+      <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="57.0" prefHeight="20.0" prefWidth="71.0" text="Año:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="year" layoutX="90.0" layoutY="52.0" prefHeight="25.0" prefWidth="90.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Label alignment="CENTER_RIGHT" layoutX="233.0" layoutY="57.0" prefHeight="20.0" prefWidth="71.0" text="Período:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="periodo" layoutX="309.0" layoutY="52.0" prefHeight="25.0" prefWidth="90.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Label alignment="CENTER_RIGHT" layoutX="436.0" layoutY="57.0" prefHeight="20.0" prefWidth="71.0" text="Curso:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="curso" layoutX="516.0" layoutY="52.0" prefHeight="25.0" prefWidth="90.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+   </children>
+</AnchorPane>
