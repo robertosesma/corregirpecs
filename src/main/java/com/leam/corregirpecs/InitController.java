@@ -1,6 +1,9 @@
 package com.leam.corregirpecs;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
@@ -8,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.YearMonth;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,6 +58,8 @@ public class InitController implements Initializable {
 	private static final String pdf = "pdf";
 	private static final String xlsx = "xlsx";
 	private static final String temp_do = "temp.do";
+	private static final String Stata = "Stata";
+	private static final String CursoStata = "Curso Stata";
 	
 	private static final String STATA17 = "Stata17";
 	private static final String STATASE = "StataSE-64.exe";
@@ -122,12 +129,11 @@ public class InitController implements Initializable {
 	                    		PrintWriter out = new PrintWriter(p.toString());
 	                    		out.println("pecs getdta, p(" + this.periodo.getText() + ") curso(" + this.curso.getText() + 
 	                    				") folder(" + dir.getAbsolutePath() + ") online " +
-	                    				"dir(" + this.folder.getText() + ") onedrive(" + this.onedrive.getText() + ")");
+	                    				"dir(" + this.folder.getText() + ") onedrive(" +
+	                    				this.GetPathCurso().toString() + ")");
 	                    		out.close();
 	                    		
-	                    		String[] exec = {this.stata.getText(), "pecs getdta, p(" + this.periodo.getText() + ") curso(" + this.curso.getText() + 
-	                    				") folder(" + dir.getAbsolutePath() + ") online " +
-	                    				"dir(" + this.folder.getText() + ") onedrive(" + this.onedrive.getText() + ")"};
+	                    		String[] exec = {this.stata.getText(), p.toString()};
 	                    		Runtime.getRuntime().exec(exec);
 	        		        }
 	        			} else { new Alert(AlertType.ERROR,INDIQUE_CURSO).showAndWait();}
@@ -138,11 +144,67 @@ public class InitController implements Initializable {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
         }
     }
-
+    
+    @FXML
+    void mnuGetXlsxSol(ActionEvent event) {
+    	try {
+        	if (Files.exists(Paths.get(this.folder.getText()))) {
+        		if (this.periodo.getText().length()>0) {
+            		Path p = Paths.get(this.folder.getText()).resolve(ST1).resolve(temp_do);
+            		PrintWriter out = new PrintWriter(p.toString());
+            		Path dta = Paths.get(this.folder.getText()).resolve(this.periodo.getText() + "_ST1.dta");
+            		Path pPEC1 = Paths.get(this.folder.getText()).resolve(ST1).resolve(PEC1);
+            		Path pxlsx = Paths.get(this.folder.getText()).resolve(ST1).resolve(PEC1).resolve(xlsx);
+            		out.println("pecs getxlsx, dta(" + dta.toString() + ") pec1(" + pPEC1.toString() + 
+            				") xlsx(" + pxlsx.toString() + ")");
+            		out.println("pecs get_results_tuto, dta(" + dta.toString() + ") pec1(" + pPEC1.toString() + ")");
+            		out.close();
+            		
+            		String[] exec = {this.stata.getText(), p.toString()};
+            		Runtime.getRuntime().exec(exec);
+        		} else { new Alert(AlertType.ERROR,INDIQUE_PERIODO).showAndWait();}
+        	} else { new Alert(AlertType.ERROR,TRABAJO_NO_EXISTE).showAndWait();}
+        } catch(Exception e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
+        }    	
+    }
+    
+    @FXML
+    void mnuCorregirPEC1(ActionEvent event) {
+    	try {
+        	if (Files.exists(Paths.get(this.folder.getText()))) {
+        		if (this.periodo.getText().length()>0) {
+	                FileChooser chooser = new FileChooser();
+	                chooser.setTitle("Seleccionar archivo comprimido");
+	                File def = new File(System.getProperty("user.home") + "\\Downloads");
+	                chooser.setInitialDirectory(def);
+	                File file = chooser.showOpenDialog(null);
+	                if (file != null) {
+	                	// unzip PDF files
+	            		this.unzip(file.getAbsolutePath(),
+	            				Paths.get(this.folder.getText()).resolve(ST1).resolve(PEC1).resolve(pdf).toString());
+	            		
+	            		// open dta with syntax
+	            		Path p = Paths.get(this.folder.getText()).resolve(ST1).resolve(temp_do);
+	            		PrintWriter out = new PrintWriter(p.toString());
+	            		out.println("pecs PEC1, dta(" + Paths.get(this.folder.getText()).resolve(this.periodo.getText() + "_ST1.dta").toString() + 
+	            				") pec1(" + Paths.get(this.folder.getText()).resolve(ST1).resolve(PEC1).toString() + ")");
+	            		out.close();            		
+	            		String[] exec = {this.stata.getText(), p.toString()};
+	            		Runtime.getRuntime().exec(exec);
+	
+	                }
+        		} else { new Alert(AlertType.ERROR,INDIQUE_PERIODO).showAndWait();}
+        	} else { new Alert(AlertType.ERROR,TRABAJO_NO_EXISTE).showAndWait();}
+        } catch(Exception e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
+        }    	    	
+    }
+    
     @FXML
     public void pbStata(ActionEvent event) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Seleccionar Stata ejecutable");
+        chooser.setTitle("Seleccionar ejecutable de Stata");
         File def = new File(System.getenv("ProgramFiles"));
         chooser.setInitialDirectory(def);
         File file = chooser.showOpenDialog(null);
@@ -175,5 +237,45 @@ public class InitController implements Initializable {
         if (dir != null) {
         	this.onedrive.setText(dir.getAbsolutePath());
         }
+    }
+    
+    public Path GetPathCurso() {
+    	Path p = Paths.get(this.onedrive.getText());
+    	return p.resolve(Stata).resolve(CursoStata).resolve(this.year.getText());
+    }
+    
+    public void unzip(String zipFilePath, String destDir) {
+        File dir = new File(destDir);
+        // create output directory if it doesn't exist
+        if(!dir.exists()) dir.mkdirs();
+        FileInputStream fis;
+        //buffer for read and write data to file
+        byte[] buffer = new byte[1024];
+        try {
+            fis = new FileInputStream(zipFilePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipEntry ze = zis.getNextEntry();
+            while(ze != null){
+                String fileName = ze.getName();
+                File newFile = new File(destDir + File.separator + fileName);
+                //create directories for sub directories in zip
+                new File(newFile.getParent()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                	fos.write(buffer, 0, len);
+                }
+                fos.close();
+                //close this ZipEntry
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+            }
+            //close last ZipEntry
+            zis.closeEntry();
+            zis.close();
+            fis.close();
+        } catch (IOException e) {
+        	new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
+        }        
     }
 }

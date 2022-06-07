@@ -73,5 +73,32 @@
             <Font size="14.0" />
          </font>
       </MenuButton>
+      <MenuButton layoutX="191.0" layoutY="139.0" mnemonicParsing="false" prefWidth="95.0" text="PEC0">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <items>
+            <MenuItem mnemonicParsing="false" onAction="#mnuCarpetas" text="Carpetas" />
+            <MenuItem mnemonicParsing="false" onAction="#mnuAlumnos" text="Alumnos" />
+         </items>
+      </MenuButton>
+      <MenuButton layoutX="355.0" layoutY="139.0" mnemonicParsing="false" prefWidth="95.0" text="PEC1">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <items>
+            <MenuItem mnemonicParsing="false" onAction="#mnuGetXlsxSol" text="Genera Excel y solución" />
+            <MenuItem mnemonicParsing="false" onAction="#mnuCorregirPEC1" text="Corregir" />
+         </items>
+      </MenuButton>
+      <MenuButton layoutX="512.0" layoutY="139.0" mnemonicParsing="false" prefWidth="95.0" text="PEC">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <items>
+            <MenuItem mnemonicParsing="false" onAction="#mnuCarpetas" text="Carpetas" />
+            <MenuItem mnemonicParsing="false" onAction="#mnuAlumnos" text="Alumnos" />
+         </items>
+      </MenuButton>
    </children>
 </AnchorPane>
